@@ -4,55 +4,45 @@
 
 #include <stdbool.h>
 
-#define NAMESIZE 50
-#define ADDRESSSIZE 100
-
 #include <string.h>
  // A linked list node
- typedef struct Node {
-    char name[NAMESIZE];
+struct Node {
+    char name[50];
 
     int age;
 
-    char address[ADDRESSSIZE];
+    char address[100];
     int yearsOfExperience;
     struct Node* next;
-}Node;
+};
 
 
 /* Given a reference (pointer to pointer) to the head of a list
 and an int, inserts a new node on the front of the list. */
-bool push( Node** head_ref, int new_age, char name[NAMESIZE], char address[ADDRESSSIZE], int yearsOfExperience) {
+void push(struct Node** head_ref, int new_age, char name[50], char address[100], int yearsOfExperience) {
     /* 1. allocate Node*/
-     Node* new_node = (Node* ) malloc(sizeof(Node));
-     if(new_node == NULL)
-         return false;
+    struct Node* new_node = (struct Node* ) malloc(sizeof(struct Node));
 
     /* 2. put in the age */
     new_node -> age = new_age;
     new_node -> yearsOfExperience = yearsOfExperience;
-
-    //preventing buffer overflow using strncpy
-    strncpy(new_node -> name, name, sizeof(char) * NAMESIZE);  
-    strncpy(new_node -> address, address, sizeof(char) * ADDRESSSIZE);
+    strcpy(new_node -> name, name);
+    strcpy(new_node -> address, address);
 
     /* 3. Make next of new node as head */
     new_node -> next = ( * head_ref);
 
     /* 4. move the head to point to the new Node*/
     ( * head_ref) = new_node;
-    return true;
 }
 
 /* Given a reference (pointer to pointer) to the head
 of a list and an int, appends a new node at the end */
-bool append( Node** head_ref, int new_age, char name[NAMESIZE], char address[ADDRESSSIZE], int yearsOfExperience) {
+void append(struct Node** head_ref, int new_age, char name[50], char address[100], int yearsOfExperience) {
     /* 1. allocate Node*/
-    Node* new_node = (Node* ) malloc(sizeof(Node));
-    if(new_node == NULL)
-        return false;
+    struct Node* new_node = (struct Node* ) malloc(sizeof(struct Node));
 
-    Node* last = * head_ref; /* used in step 5*/
+    struct Node* last = * head_ref; /* used in step 5*/
 
     /* 2. put in the age */
     new_node -> age = new_age;
@@ -67,7 +57,7 @@ bool append( Node** head_ref, int new_age, char name[NAMESIZE], char address[ADD
     /* 4. If the Linked List is empty, then make the new node as head */
     if ( * head_ref == NULL) {
         * head_ref = new_node;
-        return true;
+        return;
     }
 
     /* 5. Else traverse till the last Node*/
@@ -76,11 +66,11 @@ bool append( Node** head_ref, int new_age, char name[NAMESIZE], char address[ADD
 
     /* 6. Change the next of last Node*/
     last -> next = new_node;
-    return true;
+    return;
 }
 
 /* Checks whether the value x is present in linked list */
-int search(Node* head, int x, int pos) {
+int search(struct Node* head, int x, int pos) {
     // Base case
     if (head == NULL)
         return -1;
@@ -94,20 +84,20 @@ int search(Node* head, int x, int pos) {
 }
 
 /* Function to reverse the linked list */
-bool reverse(Node** head_ref)
+void reverse(struct Node** head_ref)
 {
-    Node* first;
-    Node* rest;
+    struct Node* first;
+    struct Node* rest;
 
     /* empty list */
     if (*head_ref == NULL)
-       return false;
+       return;
 
     first = *head_ref;
     rest  = first->next;
 
     if (rest == NULL)
-       return true;
+       return;
 
     reverse(&rest);
     first->next->next  = first;
@@ -117,7 +107,7 @@ bool reverse(Node** head_ref)
     *head_ref = rest;
 }
 
-void printList(Node* node) {
+void printList(struct Node* node) {
     printf("\n The list is printed in the order: age, years of experience, name, address\n");
     while (node != NULL) {
         printf("[ %d %d %s %s ]->", node -> age, node -> yearsOfExperience, node -> name, node -> address);
@@ -126,20 +116,9 @@ void printList(Node* node) {
     printf("\n");
 }
 
-bool delList(Node **head){
-    if(*head == NULL)
-        return  true;
-
-    Node *current = *head;
-    *head = (*head)->next;
-    free(current);
-    delList(&(*head));
-
-}
-
 /* Driver program to test above functions*/
 int sampleLinkedList(){
-    Node* head = NULL;
+    struct Node* head = NULL;
 
     append( &head, 6, "Name1", "Address1", 10);
 
@@ -164,10 +143,7 @@ int sampleLinkedList(){
     reverse(&head);
     printList(head);
     printf("\n");
-    delList(&head);
 }
-
-
 
 int input(int* age, int* yearsOfExperience, char name[], char address[]){
     printf("Enter the following fields respectively: 1) Name, 2) Address, 3) Age, 4) Years of Experience:\n");
@@ -176,7 +152,7 @@ int input(int* age, int* yearsOfExperience, char name[], char address[]){
 
 int main() {
     /* Start with the empty list */
-    Node* head = NULL;
+    struct Node* head = NULL;
     int choice = 0;
     int age = 0, yearsOfExperience = 0;
     char name[50];
@@ -202,11 +178,11 @@ int main() {
         printf("\nEnter the age to be searched: ");
         scanf("%d", &key);
         int index = search(head, key, 0);
-        if(index == -1){
+        if(index==-1){
             printf("Element not found");
         }
         else{
-            printf("Element found at position %d", index + 1);
+            printf("Element found at position %d", index+1);
         }
         break;
 
@@ -217,10 +193,10 @@ int main() {
         case 6: printList(head);
         break;
 
-        case 0:  delList(&head);
-            exit(EXIT_SUCCESS);
+        case 0: exit(0);
+        break;
 
-        default: printf("You've entered a wrong number\n");
+        default: "You've entered a wrong number";
 
     }
 

@@ -1,21 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
-typedef struct Node
+struct node
 {
 	int key;
-	struct Node* left;
-	struct Node* right;
-}Node;
+	struct node* left;
+	struct node* right;
+};
 
-Node *newNode(int item)
+struct node *newNode(int item)
 {
-	Node *temp = (Node *)malloc(sizeof(Node));
-	if(temp == NULL)
-	    return NULL;
-
+	struct node *temp = (struct node *)malloc(sizeof(struct node));
 	temp->key = item;
 	temp->left = temp->right = NULL;
 	return temp;
@@ -23,7 +19,7 @@ Node *newNode(int item)
 
 
 
- Node* insert( Node* node, int key)
+struct node* insert(struct node* node, int key)
 {
 	if (node == NULL) return newNode(key);
 
@@ -36,7 +32,7 @@ Node *newNode(int item)
 	return node;
 }
 
-Node* search(Node* root, int key)
+struct node* search(struct node* root, int key)
 {
     if (root == NULL || root->key == key)
        return root;
@@ -46,26 +42,7 @@ Node* search(Node* root, int key)
 
     return search(root->left, key);
 }
-
-bool del(Node **root){
-    if(*root == NULL)
-        return true;
-
-    Node *current = *root;
-    Node *rootRight = (*root)->right;
-    Node *rootLeft = (*root)->left;
-
-    //delete root
-    free(current);
-
-    //delete left tree
-    del(&rootLeft);
-
-    //delete right tree
-    del(&rootRight);
-}
-
-void printPostorder(Node* node)
+void printPostorder(struct node* node)
 {
 	if (node == NULL)
 		return;
@@ -78,7 +55,7 @@ void printPostorder(Node* node)
 }
 
 
-void printInorder(Node* node)
+void printInorder(struct node* node)
 {
 	if (node == NULL)
 		return;
@@ -94,7 +71,7 @@ void printInorder(Node* node)
 }
 
 
-void printPreorder(Node* node)
+void printPreorder(struct node* node)
 {
 	if (node == NULL){
 		return;
@@ -112,7 +89,7 @@ void printPreorder(Node* node)
 
 int createSampleTree()
 {
-	Node *root = newNode(1);
+	struct node *root = newNode(1);
 	root->left			 = newNode(2);
 	root->right		 = newNode(3);
 	root->left->left	 = newNode(4);
@@ -126,7 +103,6 @@ int createSampleTree()
 
 	printf("\nPostorder traversal of binary tree is \n");
 	printPostorder(root);
-    del(&root);
 
 	getchar();
 	return 0;
@@ -134,17 +110,16 @@ int createSampleTree()
 
 int main(){
     int choice;
-        Node *root = NULL;
-        Node* searchNode = NULL;
+        struct node *root = NULL;
+        struct node* searchNode = NULL;
         int key;
     do{
-        printf("\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", "Choose one of the following options:",
-        "1. Add a Node to the tree.",
+        printf("\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n", "Choose one of the following options:",
+        "1. Add a node to the tree.",
         "2. Perform preorder traversal.",
         "3. Perform inorder traversal.",
         "4. Perform postorder traversal.",
         "5. Search an item in the tree.",
-        "6. Create sample tree.",
         "0. Exit."
         );
         scanf("%d", &choice);
@@ -180,14 +155,10 @@ int main(){
                 printf("Found");
             }
             break;
-
-            case 6: createSampleTree();
-            break;
-
             case 0:
             printf("Exiting program. Bye :) \n");
-            del(&root);
-            exit(EXIT_SUCCESS);
+            exit(0);
+            break;
             default:
                 printf("Invalid choice. Please enter a valid choice.\n");
                 break;
